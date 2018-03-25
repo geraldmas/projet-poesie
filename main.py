@@ -1,7 +1,7 @@
 from random import random
 import glob
 
-count_endphrase = 16
+count_endphrase = 32
 
 # Lecture des fichiers
 
@@ -65,6 +65,7 @@ texte_genere = ""
 
 cumm_courant = 0
 i = 0
+j = 0
 while random() > sorted_dict[min(i+1, len(sorted_dict)-1)][1][2] and i+1 < len(sorted_dict):
 	cumm_courant = sorted_dict[i][1][2]
 	i+=1
@@ -73,7 +74,12 @@ mot_courant = sorted_dict[max(i-1, 0)][0]
 while count_endphrase > 0:
 	texte_genere += mot_courant + " "
 	if mot_courant == ".":
-		texte_genere += "\n"
+		if j%4 == 3:
+			texte_genere = texte_genere[:-2]+"\n\n"
+		else:
+			texte_genere = texte_genere[:-2]+"\n"
+		j+=1
+		count_endphrase -= 1
 	sorted_dict = sorted(dict_mots[mot_courant][1].items(), key = lambda t: t[1][1])
 	cumm_courant = 0
 	i = 0
