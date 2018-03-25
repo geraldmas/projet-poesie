@@ -1,6 +1,8 @@
 from random import random
 import glob
 
+count_endphrase = 16
+
 # Lecture des fichiers
 
 to_add = []
@@ -60,7 +62,6 @@ output = open("output.txt", "w")
 sorted_dict = sorted(dict_mots.items(), key = lambda t: t[1][2])
 
 texte_genere = ""
-count_endphrase = 64
 
 cumm_courant = 0
 i = 0
