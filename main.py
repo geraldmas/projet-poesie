@@ -1,7 +1,11 @@
 from random import random
 import glob
 
-count_endphrase = 32
+nb_couplet = 9
+taille_refrain = 8
+taille_couplet = 4
+nb_couplet_avant_ref = 3
+nb_phrase_total = nb_couplet*taille_couplet
 
 # Lecture des fichiers
 
@@ -27,11 +31,6 @@ for i, mot in enumerate(to_add):
 			dict_mots[mot][1][to_add[i+1]][0] += 1
 		else:
 			dict_mots[mot][1][to_add[i+1]] = [1, 0]
-		if to_add[i+1] in [".", "!", "?"]:
-			if "__ENDPHRASE__" in dict_mots[mot][1].keys():
-				dict_mots[mot][1]["__ENDPHRASE__"][0] +=1
-			else:
-				dict_mots[mot][1]["__ENDPHRASE__"] = [1, 0]
 
 # Passage aux probas
 
@@ -61,7 +60,7 @@ output = open("output.txt", "w")
 
 sorted_dict = sorted(dict_mots.items(), key = lambda t: t[1][2])
 
-texte_genere = ""
+refrain = ""
 
 cumm_courant = 0
 i = 0
@@ -71,15 +70,11 @@ while random() > sorted_dict[min(i+1, len(sorted_dict)-1)][1][2] and i+1 < len(s
 	i+=1
 
 mot_courant = sorted_dict[max(i-1, 0)][0]
-while count_endphrase > 0:
-	texte_genere += mot_courant + " "
+while taille_refrain > 0:
+	refrain += mot_courant + " "
 	if mot_courant == ".":
-		if j%4 == 3:
-			texte_genere = texte_genere[:-2]+"\n\n"
-		else:
-			texte_genere = texte_genere[:-2]+"\n"
-		j+=1
-		count_endphrase -= 1
+		refrain = refrain[:-2]+"\n"
+		taille_refrain -= 1
 	sorted_dict = sorted(dict_mots[mot_courant][1].items(), key = lambda t: t[1][1])
 	cumm_courant = 0
 	i = 0
@@ -87,9 +82,39 @@ while count_endphrase > 0:
 		cumm_courant = sorted_dict[i][1][1]
 		i+=1
 	mot_courant = sorted_dict[max(i-1, 0)][0]
-	if mot_courant == "__ENDPHRASE__":
-		count_endphrase -= 1
-		mot_courant = "."
 
+
+sorted_dict = sorted(dict_mots.items(), key = lambda t: t[1][2])
+texte_genere = ""
+
+cumm_courant = 0
+i = 0
+j = 0
+k = 0
+while random() > sorted_dict[min(i+1, len(sorted_dict)-1)][1][2] and i+1 < len(sorted_dict):
+	cumm_courant = sorted_dict[i][1][2]
+	i+=1
+
+mot_courant = sorted_dict[max(i-1, 0)][0]
+while nb_phrase_total > 0:
+	texte_genere += mot_courant + " "
+	if mot_courant == ".":
+		texte_genere = texte_genere[:-2]+"\n"
+		if j%taille_couplet == taille_couplet-1:
+			if k%nb_couplet_avant_ref == nb_couplet_avant_ref-1:
+				texte_genere += "\n"+refrain+"\n"
+			else:
+				texte_genere += "\n\n"
+			k+=1
+		j+=1
+		nb_phrase_total -= 1
+	sorted_dict = sorted(dict_mots[mot_courant][1].items(), key = lambda t: t[1][1])
+	cumm_courant = 0
+	i = 0
+	while random() > sorted_dict[min(i+1, len(sorted_dict)-1)][1][1] and i+1 < len(sorted_dict):
+		cumm_courant = sorted_dict[i][1][1]
+		i+=1
+	mot_courant = sorted_dict[max(i-1, 0)][0]
+texte_genere += "\n"+refrain+"\n"
 output.write(texte_genere)
 output.close()
