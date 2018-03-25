@@ -1,10 +1,10 @@
 from random import random
 import glob
 
-nb_couplet = 9
-taille_refrain = 8
+nb_couplet = 6
+taille_refrain = 6
 taille_couplet = 4
-nb_couplet_avant_ref = 3
+nb_couplet_avant_ref = 2
 nb_phrase_total = nb_couplet*taille_couplet
 
 # Lecture des fichiers
@@ -65,7 +65,7 @@ refrain = ""
 cumm_courant = 0
 i = 0
 j = 0
-while random() > sorted_dict[min(i+1, len(sorted_dict)-1)][1][2] and i+1 < len(sorted_dict):
+while (random() > sorted_dict[min(i+1, len(sorted_dict)-1)][1][2] and i+1 < len(sorted_dict) or sorted_dict[max(i-1, 0)][0] in [",", ".", ":", "?", "!", ")"]):
 	cumm_courant = sorted_dict[i][1][2]
 	i+=1
 
@@ -91,7 +91,7 @@ cumm_courant = 0
 i = 0
 j = 0
 k = 0
-while random() > sorted_dict[min(i+1, len(sorted_dict)-1)][1][2] and i+1 < len(sorted_dict):
+while (random() > sorted_dict[min(i+1, len(sorted_dict)-1)][1][2] and i+1 < len(sorted_dict) and i+1 < len(sorted_dict) or sorted_dict[max(i-1, 0)][0] in [",", ".", ":", "?", "!"]):
 	cumm_courant = sorted_dict[i][1][2]
 	i+=1
 
